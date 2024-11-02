@@ -14,12 +14,18 @@ const programIdMapping: Record<ProgramId, number> = {
   PublicSessions: 4715,
 };
 
-interface Event {
+export interface Event {
   eventId: number;
   eventName: string;
   eventStartDate: string;
   eventEndDate: string;
   programId: number;
+  spaces: {
+    spaceName: string;
+    spaceId: number;
+  }[];
+  eventStartTime: string;
+  eventEndTime: string;
 }
 
 async function fetchEvents(

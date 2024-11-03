@@ -1,4 +1,5 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
+import LogoWithText from "../components/LogoWithText.tsx";
 import {
   Event,
   getAvailableEvents,
@@ -43,11 +44,12 @@ export default function Home({ data }: PageProps<PageData>) {
   const { query, result } = data;
   return (
     <div class="px-4 py-8 mx-auto">
-      <div class="max-w-screen-md mx-auto flex flex-col items-center justify-center">
+      <div class="max-w-screen-md mx-auto flex flex-col items-center gap-8">
+        <LogoWithText />
         <SearchForm query={query} />
-        <div class="mt-8 w-full">
-          <h2 class="text-2xl font-bold mb-4">Upcoming Events</h2>
-          <div class="space-y-4">
+        <div class="w-full">
+          <h2 class="text-xl font-bold mb-2">Upcoming Events</h2>
+          <div class="flex flex-col gap-2">
             {result.map((event) => (
               <div key={event.eventId} class="p-4 border rounded bg-white">
                 <div className="flex justify-between">
@@ -60,7 +62,7 @@ export default function Home({ data }: PageProps<PageData>) {
                     })}
                   </p>
                 </div>
-                <div className="flex justify-between">
+                <div class="flex justify-between">
                   <span>
                     {getProgramLabel(event.programId)}
                   </span>

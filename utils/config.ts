@@ -1,7 +1,4 @@
-// utils/config.ts
-import { config } from "https://deno.land/x/dotenv@v3.2.2/mod.ts";
-
-const env = config();
+const env = Deno.env.toObject();
 
 export const VAPID_PUBLIC_KEY = env.VAPID_PUBLIC_KEY;
 export const VAPID_PRIVATE_KEY = env.VAPID_PRIVATE_KEY;

@@ -1,4 +1,5 @@
 import { useState } from "preact/hooks";
+import { BellAlertIcon, BellIcon } from "../components/Icons.tsx";
 
 type NotifyProps = {
     programIds: number[];
@@ -77,8 +78,17 @@ export default function NotifyButton(
     };
 
     return (
-        <button onClick={subscribeUser} disabled={subscribed}>
-            {subscribed ? "Subscribed" : "Notify Me"}
+        <button
+            onClick={subscribeUser}
+            disabled={subscribed}
+            class={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                subscribed
+                    ? "bg-gray-100 text-gray-500 cursor-not-allowed"
+                    : "bg-logoBlue text-white hover:bg-blue-600"
+            }`}
+        >
+            {subscribed ? <BellAlertIcon /> : <BellIcon />}
+            {subscribed ? "Enabled" : "Notify"}
         </button>
     );
 }

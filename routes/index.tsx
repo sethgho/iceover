@@ -53,7 +53,7 @@ export default function Home({ data }: PageProps<PageData>) {
         <LogoWithText />
         <SearchForm query={query} />
         <div class="w-full">
-          <div class="flex justify-between">
+          <div class="flex justify-between items-baseline">
             <h2 class="text-xl font-bold mb-2">Upcoming Events</h2>
             <NotifyButton
               programIds={query.programs}

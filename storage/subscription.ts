@@ -4,7 +4,7 @@ import kv from "./kv.ts";
 export const IceTimeSubscriptionSchema = z.object({
     subscription: z.object({
         endpoint: z.string().url(),
-        expirationTime: z.number().optional(),
+        expirationTime: z.number().optional().nullable(),
         keys: z.object({
             p256dh: z.string(),
             auth: z.string(),

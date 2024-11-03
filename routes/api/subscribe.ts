@@ -25,16 +25,19 @@ export const handler: Handler = async (req: Request, _ctx: RouteContext) => {
         return new Response("Method Not Allowed", { status: 405 });
     }
     let subscription: IceTimeSubscription;
+    const json = await req.json();
     try {
         subscription = IceTimeSubscriptionSchema.parse(
-            await req.json(),
+            json,
         );
         console.log(subscription);
     } catch {
+        console.error("Invalid subscription payload", json);
         return new Response("Invalid subscription payload", { status: 400 });
     }
 
     await addSubscription(subscription);
+    console.info("Added subscription", subscription);
 
     return new Response("Subscribed", { status: 201 });
 };

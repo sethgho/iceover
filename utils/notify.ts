@@ -65,8 +65,11 @@ export async function notifyUsers() {
         );
 
         if (shouldNotify) {
+            console.info("Sending notification", {
+                subscription: entry.value,
+                eventsByProgramId,
+            });
             const notificationData = createNotification(eventsByProgramId);
-            console.log("Sending notification", { notificationData });
             await sendPushNotification(entry.value, notificationData);
         }
     }

@@ -7,6 +7,7 @@ export const handler = async (req: Request) => {
     }
 
     // TODO: Implement authentication here to secure the endpoint
+    console.info("Sending notifications");
 
     await notifyUsers();
     return new Response("Notifications sent", { status: 200 });

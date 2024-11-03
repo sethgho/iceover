@@ -8,6 +8,7 @@ import {
 } from "../../utils/config.ts";
 import {
     addSubscription,
+    deleteSubscription,
     IceTimeSubscription,
     IceTimeSubscriptionSchema,
 } from "../../storage/subscription.ts";
@@ -21,9 +22,6 @@ if (CONTACT_EMAIL) {
 }
 
 export const handler: Handler = async (req: Request, _ctx: RouteContext) => {
-    if (req.method !== "POST") {
-        return new Response("Method Not Allowed", { status: 405 });
-    }
     let subscription: IceTimeSubscription;
     const json = await req.json();
     try {
@@ -36,8 +34,15 @@ export const handler: Handler = async (req: Request, _ctx: RouteContext) => {
         return new Response("Invalid subscription payload", { status: 400 });
     }
 
-    await addSubscription(subscription);
-    console.info("Added subscription", subscription);
-
-    return new Response("Subscribed", { status: 201 });
+    if (req.method === "POST") {
+        await addSubscription(subscription);
+        console.info("Added subscription", subscription);
+        return new Response("Subscribed", { status: 201 });
+    } else if (req.method === "DELETE") {
+        await deleteSubscription(subscription);
+        console.info("Deleted subscription", subscription);
+        return new Response("Unsubscribed", { status: 200 });
+    } else {
+        return new Response("Method Not Allowed", { status: 405 });
+    }
 };

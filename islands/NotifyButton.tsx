@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import { BellAlertIcon, BellIcon } from "../components/Icons.tsx";
 
 type NotifyProps = {
@@ -9,8 +9,56 @@ type NotifyProps = {
 export default function NotifyButton(
     { programIds, vapidPublicKey }: NotifyProps,
 ) {
-    const [subscribed, setSubscribed] = useState(false);
+    const [subscribed, setSubscribed] = useState<boolean | null>(null);
+    useEffect(() => {
+        const checkSubscription = async () => {
+            if (!("serviceWorker" in navigator)) {
+                return;
+            }
 
+            try {
+                const registration = await navigator.serviceWorker.ready;
+                const subscription = await registration.pushManager
+                    .getSubscription();
+                setSubscribed(!!subscription);
+            } catch (error) {
+                console.error("Error checking subscription status:", error);
+            }
+        };
+
+        checkSubscription();
+    }, []);
+
+    const unsubscribeUser = async () => {
+        if (!("serviceWorker" in navigator)) {
+            return;
+        }
+
+        try {
+            const registration = await navigator.serviceWorker.ready;
+            const subscription = await registration.pushManager
+                .getSubscription();
+
+            if (subscription) {
+                await subscription.unsubscribe();
+                await fetch("/api/subscribe", {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        subscription,
+                        programIds,
+                    }),
+                });
+                setSubscribed(false);
+                console.info("Unsubscribed successfully");
+            }
+        } catch (error) {
+            console.error("Error unsubscribing:", error);
+            alert("Failed to unsubscribe from notifications");
+        }
+    };
     const subscribeUser = async () => {
         if (!("serviceWorker" in navigator)) {
             const message =
@@ -71,16 +119,21 @@ export default function NotifyButton(
 
         if (response.ok) {
             setSubscribed(true);
-            alert("Subscribed successfully!");
         } else {
-            alert("Subscription failed.");
+            alert(`Subscription failed: ${response.statusText}`);
         }
     };
 
     return (
         <button
-            onClick={subscribeUser}
-            disabled={subscribed}
+            class={subscribed === null ? "opacity-0 cursor-not-allowed" : null}
+            onClick={() => {
+                if (subscribed) {
+                    unsubscribeUser();
+                } else {
+                    subscribeUser();
+                }
+            }}
             class={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
                 subscribed
                     ? "bg-gray-100 text-gray-500 cursor-not-allowed"

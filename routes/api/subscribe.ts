@@ -12,11 +12,13 @@ import {
     IceTimeSubscriptionSchema,
 } from "../../storage/subscription.ts";
 
-webpush.setVapidDetails(
-    CONTACT_EMAIL,
-    VAPID_PUBLIC_KEY,
-    VAPID_PRIVATE_KEY,
-);
+if (CONTACT_EMAIL) {
+    webpush.setVapidDetails(
+        CONTACT_EMAIL,
+        VAPID_PUBLIC_KEY,
+        VAPID_PRIVATE_KEY,
+    );
+}
 
 export const handler: Handler = async (req: Request, _ctx: RouteContext) => {
     if (req.method !== "POST") {

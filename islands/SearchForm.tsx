@@ -15,7 +15,7 @@ export default function SearchForm(props: SearchFormProps) {
 
     return (
         <form class="w-full">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:flex lg:justify-around gap-2">
+            <div class="flex flex-wrap justify-start gap-2">
                 {Object.values(Programs).map(({ id }) => (
                     <ProgramCheckbox
                         programId={id}

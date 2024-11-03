@@ -16,12 +16,16 @@ import {
 } from "../icehouseApi.ts";
 import { ICETIME_ALERTS_BASE_URL } from "./config.ts";
 
-// Configure web-push
-webPush.setVapidDetails(
-    CONTACT_EMAIL,
-    VAPID_PUBLIC_KEY,
-    VAPID_PRIVATE_KEY,
-);
+// Something funky happens during the build process with deno deploy.
+// https://github.com/denoland/fresh/issues/1843
+if (VAPID_PRIVATE_KEY) {
+    // Configure web-push
+    webPush.setVapidDetails(
+        CONTACT_EMAIL,
+        VAPID_PUBLIC_KEY,
+        VAPID_PRIVATE_KEY,
+    );
+}
 
 type IceTimeNotification = {
     type: "alert";

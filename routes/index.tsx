@@ -3,7 +3,6 @@ import LogoWithText from "../components/LogoWithText.tsx";
 import { ProgramTag } from "../components/Programs.tsx";
 import {
   getAvailableEvents,
-  getProgramLabel,
   IceEvent,
   ProgramId,
   Programs,

@@ -50,7 +50,7 @@ export function ProgramCheckbox(
             />
             <label
                 for={id}
-                class={`${theme} px-4 py-1 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-logoBlue rounded-full peer peer-unchecked:bg-white peer-unchecked:text-black 
+                class={`${theme} cursor-pointer px-4 py-1 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-logoBlue rounded-full peer peer-unchecked:bg-white peer-unchecked:text-black 
                 border-dashed peer-checked:border-opacity-0 border-2 border-gray-400 `}
             >
                 <span class="">

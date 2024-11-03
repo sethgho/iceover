@@ -126,7 +126,6 @@ export default function NotifyButton(
 
     return (
         <button
-            class={subscribed === null ? "opacity-0 cursor-not-allowed" : null}
             onClick={() => {
                 if (subscribed) {
                     unsubscribeUser();
@@ -134,11 +133,12 @@ export default function NotifyButton(
                     subscribeUser();
                 }
             }}
-            class={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
                 subscribed
-                    ? "bg-gray-100 text-gray-500 cursor-not-allowed"
+                    ? "bg-logoBlue bg-opacity-80 text-white"
                     : "bg-logoBlue text-white hover:bg-blue-600"
-            }`}
+            }
+            ${subscribed === null ? "opacity-0 cursor-not-allowed" : null}`}
         >
             {subscribed ? <BellAlertIcon /> : <BellIcon />}
             {subscribed ? "Enabled" : "Notify"}

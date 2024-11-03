@@ -1,17 +1,20 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
 import LogoWithText from "../components/LogoWithText.tsx";
 import {
-  Event,
   getAvailableEvents,
   getProgramLabel,
+  IceEvent,
   ProgramId,
   Programs,
 } from "../icehouseApi.ts";
+import NotifyButton from "../islands/NotifyButton.tsx";
 import SearchForm, { SearchQuery } from "../islands/SearchForm.tsx";
+import { VAPID_PUBLIC_KEY } from "../utils/config.ts";
 
 type PageData = {
   query: SearchQuery;
-  result: Event[];
+  result: IceEvent[];
+  vapidKey: string;
 };
 export const handler: Handlers<PageData> = {
   async GET(req, ctx) {
@@ -36,19 +39,26 @@ export const handler: Handlers<PageData> = {
         endDate,
       },
       result: events,
+      vapidKey: VAPID_PUBLIC_KEY,
     });
   },
 };
 
 export default function Home({ data }: PageProps<PageData>) {
-  const { query, result } = data;
+  const { query, result, vapidKey } = data;
   return (
     <div class="px-4 py-8 mx-auto">
       <div class="max-w-screen-md mx-auto flex flex-col items-center gap-8">
         <LogoWithText />
         <SearchForm query={query} />
         <div class="w-full">
-          <h2 class="text-xl font-bold mb-2">Upcoming Events</h2>
+          <div class="flex justify-between">
+            <h2 class="text-xl font-bold mb-2">Upcoming Events</h2>
+            <NotifyButton
+              programIds={query.programs}
+              vapidPublicKey={vapidKey}
+            />
+          </div>
           <div class="flex flex-col gap-2">
             {result.map((event) => (
               <div key={event.eventId} class="p-4 border rounded bg-white">

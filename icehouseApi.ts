@@ -12,7 +12,7 @@ export function getProgramLabel(programId: ProgramId) {
     return Object.values(Programs).find((p) => p.id === programId)?.label;
 }
 
-export interface Event {
+export interface IceEvent {
     eventId: number;
     eventName: string;
     eventStartDate: string;
@@ -30,7 +30,7 @@ async function fetchEvents(
     startDate: Date,
     endDate: Date,
     programIds?: ProgramId[],
-): Promise<Event[]> {
+): Promise<IceEvent[]> {
     const baseUrl =
         "https://api.bondsports.co/v4/facilities/423/programs-schedule";
     const url = new URL(baseUrl);
@@ -61,4 +61,10 @@ export function getAvailableEvents(
     programIds?: ProgramId[],
 ) {
     return fetchEvents(startDate, endDate, programIds);
+}
+
+export function getTomorrowEvents(programIds?: ProgramId[]) {
+    const now = new Date();
+    const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    return fetchEvents(now, tomorrow, programIds);
 }

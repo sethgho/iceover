@@ -1,5 +1,8 @@
 import { Programs } from "../icehouseApi.ts";
 
+// TODO: Style the checkboxes as toggle buttons.
+// Color code the options.
+// Update results to show the program as a tag with that color.
 export type SearchQuery = {
     programs: number[];
     startDate: Date;

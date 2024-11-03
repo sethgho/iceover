@@ -15,3 +15,12 @@ deno task start
 ```
 
 This will watch the project directory and restart as necessary.
+
+### Web Push
+
+Generate the VAPID keys:
+
+```
+# You can use any Web compatible runtime.
+$ deno run https://raw.githubusercontent.com/negrel/webpush/master/cmd/generate-vapid-keys.ts
+```

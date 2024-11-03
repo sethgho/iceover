@@ -8,10 +8,10 @@ const ProgramButtonThemes: Record<
         toggle: "peer-checked:bg-blue-500 peer-checked:text-white",
         tag: "border-blue-500 bg-blue-500",
     },
-    [Programs.HolidayShow.id]: {
-        toggle: "peer-checked:bg-red-500 peer-checked:text-white",
-        tag: "border-red-500 bg-red-500",
-    },
+    // [Programs.HolidayShow.id]: {
+    //     toggle: "peer-checked:bg-red-500 peer-checked:text-white",
+    //     tag: "border-red-500 bg-red-500",
+    // },
     [Programs.FreestyleSessions.id]: {
         toggle: "peer-checked:bg-violet-400 peer-checked:text-white",
         tag: "border-violet-400 bg-violet-400",

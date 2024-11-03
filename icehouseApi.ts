@@ -2,7 +2,7 @@ export type ProgramId = (typeof Programs)[keyof typeof Programs]["id"];
 
 export const Programs: Record<string, { id: number; label: string }> = {
     LearnToSkate: { id: 4713, label: "Learn to Skate" },
-    HolidayShow: { id: 5039, label: "Holiday Show" },
+    // HolidayShow: { id: 5039, label: "Holiday Show" },
     FreestyleSessions: { id: 4795, label: "Freestyle" },
     StickAndPuck: { id: 4800, label: "Stick & Puck" },
     PublicSessions: { id: 4715, label: "Public" },

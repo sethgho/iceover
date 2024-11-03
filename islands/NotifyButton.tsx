@@ -137,8 +137,7 @@ export default function NotifyButton(
                 subscribed
                     ? "bg-logoBlue bg-opacity-80 text-white"
                     : "bg-logoBlue text-white hover:bg-blue-600"
-            }
-            ${subscribed === null ? "opacity-0 cursor-not-allowed" : null}`}
+            }`}
         >
             {subscribed ? <BellAlertIcon /> : <BellIcon />}
             {subscribed ? "Enabled" : "Notify"}

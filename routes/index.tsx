@@ -1,54 +1,87 @@
-import { useSignal } from "@preact/signals";
-import Counter from "../islands/Counter.tsx";
 import { Handlers, PageProps } from "$fresh/server.ts";
-import { getAvailableEvents, Event } from "../icehouseApi.ts";
+import {
+  Event,
+  getAvailableEvents,
+  getProgramLabel,
+  ProgramId,
+  Programs,
+} from "../icehouseApi.ts";
+import SearchForm, { SearchQuery } from "../islands/SearchForm.tsx";
 
-
-export const handler: Handlers = {
-  async GET(_req, ctx) {
-    const startDate = new Date().toISOString().split('T')[0];
-    const endDate = new Date(Date.now() + 86400000).toISOString().split('T')[0];
-    const events = await getAvailableEvents(startDate, endDate, ["PublicSessions", "StickAndPuck"]);
-    if (!events) {
-      ctx.renderNotFound()
-      return ctx.renderNotFound({
-        message: "No events found",
-      });
+type PageData = {
+  query: SearchQuery;
+  result: Event[];
+};
+export const handler: Handlers<PageData> = {
+  async GET(req, ctx) {
+    const url = new URL(req.url);
+    let programs: number[] = url.searchParams.getAll("program").map(Number);
+    if (programs.length === 0) {
+      programs = Object.values(Programs).map((p) => p.id);
     }
-    return ctx.render(events);
+
+    const startDate = new Date();
+    const endDate = new Date(Date.now() + (86400000 * 2));
+    const events = await getAvailableEvents(
+      startDate,
+      endDate,
+      programs as ProgramId[],
+    );
+
+    return ctx.render({
+      query: {
+        programs,
+        startDate,
+        endDate,
+      },
+      result: events,
+    });
   },
 };
 
-export default function Home(props: PageProps<Event[]>) {
-  const count = useSignal(3);
+export default function Home({ data }: PageProps<PageData>) {
+  const { query, result } = data;
   return (
-    <div class="px-4 py-8 mx-auto bg-[#86efac]">
+    <div class="px-4 py-8 mx-auto">
       <div class="max-w-screen-md mx-auto flex flex-col items-center justify-center">
-        <img
-          class="my-6"
-          src="/logo.svg"
-          width="128"
-          height="128"
-          alt="the Fresh logo: a sliced lemon dripping with juice"
-        />
-        <Counter count={count} />
+        <SearchForm query={query} />
         <div class="mt-8 w-full">
           <h2 class="text-2xl font-bold mb-4">Upcoming Events</h2>
           <div class="space-y-4">
-            {props.data.map((event) => (
+            {result.map((event) => (
               <div key={event.eventId} class="p-4 border rounded bg-white">
-                <h3 class="font-semibold">{event.eventName}</h3>
-                <p class="text-gray-600">
-                  Start: {new Date(event.eventStartDate).toLocaleDateString()}                  
-                </p>
-                <p>
-                Time: {event.eventStartTime} - {event.eventEndTime}
-                </p>
+                <div className="flex justify-between">
+                  <h3 class="font-semibold">{event.eventName}</h3>
+                  <p class="text-gray-600">
+                    {new Date(event.eventStartDate).toLocaleDateString([], {
+                      weekday: "long",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </p>
+                </div>
+                <div className="flex justify-between">
+                  <span>
+                    {getProgramLabel(event.programId)}
+                  </span>
+                  <p>
+                    Time:{" "}
+                    {new Date(`${event.eventStartDate} ${event.eventStartTime}`)
+                      .toLocaleTimeString([], {
+                        hour: "numeric",
+                        minute: "2-digit",
+                      })} -{" "}
+                    {new Date(`${event.eventStartDate} ${event.eventEndTime}`)
+                      .toLocaleTimeString([], {
+                        hour: "numeric",
+                        minute: "2-digit",
+                      })}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
         </div>
-
       </div>
     </div>
   );

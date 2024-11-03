@@ -1,5 +1,6 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
 import LogoWithText from "../components/LogoWithText.tsx";
+import { ProgramTag } from "../components/Programs.tsx";
 import {
   getAvailableEvents,
   getProgramLabel,
@@ -78,9 +79,7 @@ export default function Home({ data }: PageProps<PageData>) {
                   </p>
                 </div>
                 <div class="flex justify-between">
-                  <span>
-                    {getProgramLabel(event.programId)}
-                  </span>
+                  <ProgramTag programId={event.programId} />
                   <p class="">
                     <span class="hidden md:inline">
                       {"Time: "}

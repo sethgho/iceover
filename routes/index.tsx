@@ -54,11 +54,16 @@ export default function Home({ data }: PageProps<PageData>) {
               <div key={event.eventId} class="p-4 border rounded bg-white">
                 <div className="flex justify-between">
                   <h3 class="font-semibold">{event.eventName}</h3>
-                  <p class="text-gray-600">
+                  <p class="text-gray-600 hidden sm:block">
                     {new Date(event.eventStartDate).toLocaleDateString([], {
                       weekday: "long",
                       month: "short",
                       day: "numeric",
+                    })}
+                  </p>
+                  <p class="text-gray-600 sm:hidden">
+                    {new Date(event.eventStartDate).toLocaleDateString([], {
+                      weekday: "long",
                     })}
                   </p>
                 </div>
@@ -66,18 +71,26 @@ export default function Home({ data }: PageProps<PageData>) {
                   <span>
                     {getProgramLabel(event.programId)}
                   </span>
-                  <p>
-                    Time:{" "}
-                    {new Date(`${event.eventStartDate} ${event.eventStartTime}`)
-                      .toLocaleTimeString([], {
-                        hour: "numeric",
-                        minute: "2-digit",
-                      })} -{" "}
-                    {new Date(`${event.eventStartDate} ${event.eventEndTime}`)
+                  <p class="">
+                    <span class="hidden md:inline">
+                      {"Time: "}
+                    </span>
+                    {new Date(
+                      `${event.eventStartDate} ${event.eventStartTime}`,
+                    )
                       .toLocaleTimeString([], {
                         hour: "numeric",
                         minute: "2-digit",
                       })}
+                    <span class="hidden md:inline">
+                      {" "}- {new Date(
+                        `${event.eventStartDate} ${event.eventEndTime}`,
+                      )
+                        .toLocaleTimeString([], {
+                          hour: "numeric",
+                          minute: "2-digit",
+                        })}
+                    </span>
                   </p>
                 </div>
               </div>

@@ -12,14 +12,28 @@ export default function NotifyButton(
 
     const subscribeUser = async () => {
         if (!("serviceWorker" in navigator)) {
-            alert("Service Workers are not supported in your browser.");
+            const message =
+                "Service Workers are not supported in your browser.";
+            console.error(message);
+            alert(message);
             return;
         }
 
+        if (
+            typeof Notification === "undefined" &&
+            /iP(ad|hone|od).*OS/.test(navigator.userAgent)
+        ) {
+            alert(
+                "To enable notifications, please add this app to your home screen first.",
+            );
+            return;
+        }
         const permission = await Notification.requestPermission();
         console.info("Notification permission", permission);
         if (permission !== "granted") {
-            alert("Notification permission denied.");
+            const message = "Notification permission denied.";
+            console.error(message);
+            alert(message);
             return;
         }
 

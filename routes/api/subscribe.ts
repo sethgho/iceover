@@ -31,8 +31,8 @@ export const handler: Handler = async (req: Request, _ctx: RouteContext) => {
             json,
         );
         console.log(subscription);
-    } catch {
-        console.error("Invalid subscription payload", json);
+    } catch (error) {
+        console.error("Invalid subscription payload", { error, json });
         return new Response("Invalid subscription payload", { status: 400 });
     }
 

@@ -17,17 +17,30 @@ export default function NotifyButton(
         }
 
         const permission = await Notification.requestPermission();
+        console.info("Notification permission", permission);
         if (permission !== "granted") {
             alert("Notification permission denied.");
             return;
         }
 
         const registration = await navigator.serviceWorker.register("/sw.js");
-        const subscription = await registration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: vapidPublicKey,
-        });
+        let subscription = await registration.pushManager
+            .getSubscription();
 
+        if (subscription) {
+            console.info("Existing subscription", subscription);
+        } else {
+            console.info("Subscribing");
+            subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: vapidPublicKey,
+            });
+            console.info("Subscribed", subscription);
+        }
+
+        // There's a bug in Safari 18.0.1 for macOS:
+        // https://bugs.webkit.org/show_bug.cgi?id=281155
+        console.info("Subscription", subscription);
         // TODO: How to update subscription? UX? APIs?
 
         const response = await fetch("/api/subscribe", {

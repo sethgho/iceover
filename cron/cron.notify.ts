@@ -12,12 +12,13 @@ export function initCronJobs() {
     // });
 
     // 8pm CST, 2am UTC
-    Deno.cron("Notify users at 8pm", { hour: { exact: 2 } }, () => {
+    Deno.cron("Notify users at 8pm", { hour: { exact: 2 } }, async () => {
         console.log("STUB: Notify users - 8pm CST");
-    });
-
-    Deno.cron("Notify users hourly", { hour: { every: 1 } }, async () => {
-        console.log("TEST: Notify users - hourly");
         await notifyUsers();
     });
+
+    // Deno.cron("Notify users hourly", { hour: { every: 1 } }, async () => {
+    //     console.log("TEST: Notify users - hourly");
+    //     await notifyUsers();
+    // });
 }

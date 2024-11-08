@@ -59,7 +59,7 @@ export async function notifyUsers() {
     const subscriptions = getAllSubscriptions();
 
     for await (const entry of subscriptions) {
-        const { shouldNotify, eventsByProgramId } = checkResults(
+        const { shouldNotify, eventStartTimesByProgramId } = checkResults(
             entry.value.programIds,
             events,
         );
@@ -67,22 +67,25 @@ export async function notifyUsers() {
         if (shouldNotify) {
             console.info("Sending notification", {
                 subscription: entry.value,
-                eventsByProgramId,
+                eventStartTimesByProgramId,
             });
-            const notificationData = createNotification(eventsByProgramId);
+            const notificationData = createNotification(
+                eventStartTimesByProgramId,
+            );
             await sendPushNotification(entry.value, notificationData);
         }
     }
 }
 
 function createNotification(
-    eventsByProgramId: Record<number, number>,
+    eventStartTimesByProgramId: Record<number, string[]>,
 ): IceTimeNotification {
-    let body = Object.keys(eventsByProgramId)
+    let body = Object.keys(eventStartTimesByProgramId)
         .map((programId) => {
-            return `${getProgramLabel(Number(programId))}: ${
-                eventsByProgramId[Number(programId)]
-            }`;
+            return getProgramMessage(
+                Number(programId),
+                eventStartTimesByProgramId[Number(programId)],
+            );
         })
         .join("\n");
     if (!body.length) {
@@ -90,7 +93,7 @@ function createNotification(
     }
 
     const url = new URL(ICETIME_ALERTS_BASE_URL);
-    Object.keys(eventsByProgramId).forEach((programId) => {
+    Object.keys(eventStartTimesByProgramId).forEach((programId) => {
         url.searchParams.append(
             "program",
             programId,
@@ -106,22 +109,46 @@ function createNotification(
     };
 }
 
+function getProgramMessage(programId: number, eventStartTimes: string[]) {
+    const times = eventStartTimes
+        .map((time) => {
+            const [hours, minutes] = time.split(":");
+            const hour = parseInt(hours);
+            const ampm = hour >= 12 ? "pm" : "am";
+            const hour12 = hour % 12 || 12;
+            return minutes === "00"
+                ? `${hour12}${ampm}`
+                : `${hour12}:${minutes}${ampm}`;
+        })
+        .join(", ");
+    return `${getProgramLabel(programId)}: ${times}`;
+}
+
 function checkResults(
     programIds: number[],
     events: IceEvent[],
-): { shouldNotify: boolean; eventsByProgramId: Record<number, number> } {
-    const eventCounts: Record<number, number> = {};
+): {
+    shouldNotify: boolean;
+    eventStartTimesByProgramId: Record<number, string[]>;
+} {
+    const eventStartTimesByProgramId: Record<number, string[]> = {};
     for (const event of events) {
         if (programIds.includes(event.programId)) {
-            if (eventCounts[event.programId]) {
-                eventCounts[event.programId]++;
+            if (eventStartTimesByProgramId[event.programId]) {
+                eventStartTimesByProgramId[event.programId].push(
+                    event.eventStartTime,
+                );
             } else {
-                eventCounts[event.programId] = 1;
+                eventStartTimesByProgramId[event.programId] = [
+                    event.eventStartTime,
+                ];
             }
         }
     }
     return {
-        shouldNotify: Object.values(eventCounts).some((count) => count > 0),
-        eventsByProgramId: eventCounts,
+        shouldNotify: Object.values(eventStartTimesByProgramId).some((times) =>
+            times.length > 0
+        ),
+        eventStartTimesByProgramId,
     };
 }

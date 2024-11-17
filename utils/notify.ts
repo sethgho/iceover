@@ -110,18 +110,24 @@ function createNotification(
 }
 
 function getProgramMessage(programId: number, eventStartTimes: string[]) {
-    const times = eventStartTimes
-        .map((time) => {
-            const [hours, minutes] = time.split(":");
-            const hour = parseInt(hours);
-            const ampm = hour >= 12 ? "pm" : "am";
-            const hour12 = hour % 12 || 12;
-            return minutes === "00"
-                ? `${hour12}${ampm}`
-                : `${hour12}:${minutes}${ampm}`;
-        })
-        .join(", ");
-    return `${getProgramLabel(programId)}: ${times}`;
+    let timesLabel = "times";
+    if (eventStartTimes.length > 3) {
+        timesLabel = `${eventStartTimes.length} time slots`;
+    } else {
+        timesLabel = eventStartTimes
+            .map((time) => {
+                const [hours, minutes] = time.split(":");
+                const hour = parseInt(hours);
+                const ampm = hour >= 12 ? "pm" : "am";
+                const hour12 = hour % 12 || 12;
+                return minutes === "00"
+                    ? `${hour12}${ampm}`
+                    : `${hour12}:${minutes}${ampm}`;
+            })
+            .join(", ");
+    }
+
+    return `${getProgramLabel(programId)}: ${timesLabel}`;
 }
 
 function checkResults(
